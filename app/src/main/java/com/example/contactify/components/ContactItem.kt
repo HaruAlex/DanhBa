@@ -22,6 +22,8 @@ import com.example.contactify.data.Contact
 @Composable
 fun ContactItem(
     contact: Contact,
+    isSelected: Boolean = false,
+    isMultiSelect: Boolean = false,
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {

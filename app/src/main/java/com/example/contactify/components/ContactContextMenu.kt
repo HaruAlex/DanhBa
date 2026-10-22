@@ -1,11 +1,7 @@
 package com.example.contactify.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -13,15 +9,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.example.contactify.data.Contact
 
+/**
+ * Context Menu xuất hiện khi nhấn giữ vào một liên hệ.
+ * Chứa: Gọi điện, Sửa thông tin, Yêu thích, Chuyển nhóm, Sao chép, Xóa.
+ */
 @Composable
 fun ContactContextMenu(
     expanded: Boolean,
     contact: Contact,
+    allGroups: List<String> = emptyList(),
     onDismiss: () -> Unit,
     onCall: () -> Unit,
     onEdit: () -> Unit,
     onFavorite: () -> Unit,
     onCopy: () -> Unit,
+    onMoveToGroup: () -> Unit,
     onDelete: () -> Unit
 ) {
     DropdownMenu(
@@ -31,14 +33,9 @@ fun ContactContextMenu(
 
         // 📞 Gọi điện
         DropdownMenuItem(
-            text = {
-                Text("Gọi điện")
-            },
+            text = { Text("Gọi điện") },
             leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Call,
-                    contentDescription = "Gọi điện"
-                )
+                Icon(Icons.Default.Call, contentDescription = null)
             },
             onClick = {
                 onCall()
@@ -48,14 +45,9 @@ fun ContactContextMenu(
 
         // ✏️ Sửa thông tin
         DropdownMenuItem(
-            text = {
-                Text("Sửa thông tin")
-            },
+            text = { Text("Sửa thông tin") },
             leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Sửa thông tin"
-                )
+                Icon(Icons.Default.Edit, contentDescription = null)
             },
             onClick = {
                 onEdit()
@@ -63,20 +55,15 @@ fun ContactContextMenu(
             }
         )
 
-        // ⭐ Yêu thích
+        // ⭐ Yêu thích / Bỏ yêu thích
         DropdownMenuItem(
             text = {
-                Text(
-                    if (contact.isFavorite)
-                        "Bỏ yêu thích"
-                    else
-                        "Thêm vào yêu thích"
-                )
+                Text(if (contact.isFavorite) "Bỏ yêu thích" else "Thêm vào yêu thích")
             },
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = "Yêu thích"
+                    imageVector = if (contact.isFavorite) Icons.Default.StarBorder else Icons.Default.Star,
+                    contentDescription = null
                 )
             },
             onClick = {
@@ -85,16 +72,25 @@ fun ContactContextMenu(
             }
         )
 
+        // 📂 Chuyển sang nhóm khác
+        if (allGroups.isNotEmpty()) {
+            DropdownMenuItem(
+                text = { Text("Chuyển sang nhóm...") },
+                leadingIcon = {
+                    Icon(Icons.Default.DriveFileMove, contentDescription = null)
+                },
+                onClick = {
+                    onMoveToGroup()
+                    onDismiss()
+                }
+            )
+        }
+
         // 📋 Sao chép số điện thoại
         DropdownMenuItem(
-            text = {
-                Text("Sao chép số điện thoại")
-            },
+            text = { Text("Sao chép số điện thoại") },
             leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.ContentCopy,
-                    contentDescription = "Sao chép"
-                )
+                Icon(Icons.Default.ContentCopy, contentDescription = null)
             },
             onClick = {
                 onCopy()
@@ -102,16 +98,11 @@ fun ContactContextMenu(
             }
         )
 
-        // 🗑️ Xóa
+        // 🗑️ Xóa liên hệ
         DropdownMenuItem(
-            text = {
-                Text("Xóa liên hệ")
-            },
+            text = { Text("Xóa liên hệ") },
             leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Xóa"
-                )
+                Icon(Icons.Default.Delete, contentDescription = null)
             },
             onClick = {
                 onDelete()
